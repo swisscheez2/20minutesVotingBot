@@ -61,7 +61,6 @@ def scrape_comments(driver, url):
             EC.presence_of_element_located((By.ID, "commentSection"))
         )
 
-        # Check if comments are present
         comments = driver.find_elements(By.CSS_SELECTOR, 'article[data-testid="CommentCard"]')
         if not comments:
             print("No comments found.")
@@ -86,17 +85,17 @@ def scrape_comments(driver, url):
 
         delay_ms = random.randint(0, 250)
         time.sleep(delay_ms / 1000)  # we don't want to poke the bear
-        # Find and hover over the commentReaction_container element
+        # Find and hover over the commentReaction_container element so we can vote
         comment_reaction_container = comment.find_element(By.CSS_SELECTOR, '[class^="commentReaction_container"]')
         actions = ActionChains(driver)
         actions.move_to_element(comment_reaction_container).perform()
 
-        # Wait for the additional details to appear (using a wildcard selector)
+     
         WebDriverWait(driver, 5).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, '[class^="commentReactionButton_button"]'))
         )
 
-        # Locate and click on the desired voting button (using a wildcard selector)
+        # Locate and click on the desired voting button to do make it so we can choose how we want to vote
         voting_option = comment.find_element(By.CSS_SELECTOR, '[class^="commentReactionButton_button"]')
         voting_option.click()
 
@@ -110,9 +109,7 @@ driver = webdriver.Chrome(options=options)
 
 for link in article_links:
     driver =  webdriver.Chrome( options=options)  # Start a new browser instance
-    #driver.execute_script("window.open('about:blank', 'newWindow', 'width=800,height=600');")
-    #driver.switch_to.window(driver.window_handles[-1])  # Switch to the newly opened window
-    #driver.execute_script("window.open('about:blank', '_blank');")  # Open a new tab
+    #driver.execute_script("window.open('about:blank', '_blank');")  # Open a new tab if we go through alla articles on homepage
     #driver.switch_to.window(driver.window_handles[-1])  # Switch to the newly opened tab
     scrape_comments(driver, "https://www.20min.ch/story/e-vignette-seite-des-bundes-lahmgelegt-186614058610")
     driver.quit()
